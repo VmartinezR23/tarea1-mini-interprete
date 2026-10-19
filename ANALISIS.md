@@ -1,7 +1,7 @@
 # Análisis — Tarea 1
 
 **Integrantes:**
-1.
+1. Victor Martinez Reyes
 2.
 3.
 
@@ -19,8 +19,8 @@
 
 | Componente | Qué recibe | Qué entrega | De qué es responsable |
 |---|---|---|---|
-| `lexer` | | | |
-| `parser` | | | |
+| `lexer` | El texto inicial | Tokens que corresponden al texto |Identifica las partes del texto y las convierte en tokens|
+| `parser` | Los tokensdel lexer | Una representacion en AST ||
 | `ast` | | | |
 | `evaluator` | | | |
 
