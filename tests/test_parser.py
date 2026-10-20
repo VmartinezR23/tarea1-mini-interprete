@@ -35,7 +35,7 @@ def test_menos_unario_invalido():
         parser.parsear()
 
 def test_parentesis_invalidos():
-    tokens = tokenizar("3 + 3 ()")
+    tokens = tokenizar("3 * (2 + ())")
     parser = Parser(tokens)
 
     with pytest.raises(ErrorDeSintaxis):

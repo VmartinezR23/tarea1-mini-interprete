@@ -2,11 +2,9 @@
 
 **Integrantes:**
 1. Victor Martinez Reyes
-2.
-3.
 
-**Fork:**
-**Rama:**
+**Fork:** https://github.com/VmartinezR23/tarea1-mini-interprete/tree/main
+**Rama:** tarea1-pruebas-refactorizacion
 
 > Contesten en este archivo. Respuestas breves y concretas: se califica que
 > hayan entendido, no la extensión.
@@ -101,8 +99,11 @@ Que los operadores de misma precedencia se asocien de manera correcta a la izqui
 ## 4. Los defectos
 
 ### 4.1 ¿Qué defecto reveló primero una prueba nueva?
+La primera prueba que reveló un defecto fue que el parser no detectaba los tokens sobrantes y pasaba la prueba como valida y no reportaba el error esperado.
 
 ### 4.2 ¿Por qué el comportamiento observado era incorrecto?
+Porque el parser debia de asegurar que todos los tokens que entraban formaran una expresion valida por lo que no cumplia con la semantica declarada en el README, donde establece que una entrada invalida debe de rechazarse con un ErrorDeSintaxis
+
 
 > No basta con "daba mal". Digan contra qué lo están comparando: qué regla,
 > qué línea de la semántica declarada del README.
@@ -110,26 +111,43 @@ Que los operadores de misma precedencia se asocien de manera correcta a la izqui
 ### 4.3 ¿Qué cambio realizaron?
 
 | Defecto | Entrada que lo revela | Daba | Debería dar | Commit rojo | Commit verde |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
+|El parser aceptaba expresiones con parentesis vacios |3 + 3 ()|la prueba pasaba sin lanzar error |Lanzar ErrorDeSintaxis|4709f13|b380e2a|
+|La asociatividad de operaciones iguales no se cumplia a la izquierda|10 - 2 - 3 - 1| 10 (10 - (2 - (3 - 1)) = 10)|4 |4709f13|b380e2a|
+
 | | | | | | |
 
 ### 4.4 ¿Cómo saben que la corrección es general y no sólo hace pasar ese ejemplo?
+En el caso de la asociatividad al evaluar con el caso de la resta y al esta no ser asociativa permite identificar que las operaciones se agrupan en un orden incorrecto.
 
----
+En el caso del parser con los parentesis se puede comprobar que la solución es general comprobando en más casos las diferentes formas en las que pudiera ocurrir el comportamiento incorrecto.
+
 
 ## 5. Diseño
 
 ### 5.1 ¿Qué duplicación o señal de mal diseño encontraron?
 
+1. En primer caso se encontro rigidez en los métodos de _expresion() y _termino() que utilizaban recursión a la derecha, lo que dificultaba corregir la asociatividad de los operadores por lo que fue necesario modificar ambos métodos para el correcto funcionamiento de las operaciones del mismo nivel de izquierda a derecha.
+
+2. En el caso del evaluator contiene un mal diseño al contener condicionales explosivos al momento de determinar el operador y el orden que debe de seguir.
 > Al menos dos. Usen el vocabulario de clase: duplicación, rigidez,
 > acoplamiento alto, condicionales repetidos, amplificación del cambio.
 
 ### 5.2 ¿Qué refactorización realizaron, y por qué conserva el comportamiento?
 
+Para el primer caso de la asociatividad en el caso de _expresion() y _termino() usaban recursion por lo que agrupaban de incorrectamente operaciones de la misma jerarquia, por lo que se modifico a usar un ciclo while pero conserva su comportamiento porque ambos métodos aún mantienen relación al momento de analizar en orden cada una de las operaciones.
+
+Para el segundo caso de los parentesis vacios solamente se agrego una comprobación en el método de _parsear() por lo que conserva aún el comportamiento ya que si la prueba no contiene un parentesis vacio pasa de forma normal al no lanzar ninguna excepción.
+
+
 > "Las pruebas siguen pasando" es parte de la respuesta, pero no toda.
 > ¿Por qué el cambio es equivalente?
 
 ### 5.3 ¿Sería pertinente usar Factory Method, Adapter o ninguno?
+En este caso no seria necesario de ninguno ya que para resolver los problemas encontrados solo fue util el refactorizar y modificar algunos métodos para cumplir con el comportamiento esperado, por lo que si se emplean pueden aumentar la complejidad del codigo sin dar un benificio util.
+
+Para que exista el caso de que sea necesario utilizar alguno de los dos métodos debe de exisistir un problema en el cual sea de gran ayuda utilizar alguno de los patrones de diseño, como por ejemplo adaptar alguna biblioteca externa al interprete.
+
 
 > Justifiquen. **"Ninguno" puede ser la respuesta correcta.** Si dicen que sí,
 > digan qué problema concreto resuelve y qué costo tiene. Si dicen que no,
@@ -137,10 +155,12 @@ Que los operadores de misma precedencia se asocien de manera correcta a la izqui
 
 ### 5.4 ¿Qué parte del sistema sería más difícil de modificar si se agregara un operador nuevo?
 
+Para agregar un nuevo operador al sistema seria necesario modificar los 4 archivos principales (el de los token.py, evaluator.py, lexer.py y parser.py) ya que a pesar de que sean diferentes archivos, cada uno cuenta con una responsabilidad diferente con la cual interactuan en cada etapa del interprete(token.py define el tipo de token,lexer.py reconoce cada simbolo y le asigna un token definido, parser.py determina su orden y la asociatividad y evaluator.py evalua la expresión), por lo que todo tendría que ser modificado al agregar un nuevo operador.
+
+
 > Por ejemplo `%`. ¿Cuántos archivos hay que tocar? ¿Por qué?
 
 ---
-
 ## Antes de la declaración: inténtenlo primero ustedes
 
 Usar IA o no es decisión de cada quien, y el curso la permite. Pero **les
