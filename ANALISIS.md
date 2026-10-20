@@ -89,11 +89,11 @@ Que los operadores de misma precedencia se asocien de manera correcta a la izqui
 |---|---|---|---|---|
 |test_parser.py::test_menos_unario_invalido| -3| ErrorDeSintaxis | inválida | Porque es un valor que del cual se espera un error|
 |test_parser.py::test_parentesis_invalidos|3 + 3 () |ErrorDeSinteaxis | invalida| Los parentesis no contienen ni un número o expresion|
-| test_evaluator.py :: division_entre_cero | algún numero entre cero | ErrorDeEvaluacion | Frontera | Porque verifica que el programa maneje bien la excepcion de que no se pueda dividir entre cero |
+| test_evaluator.py :: division_entre_cero | algún numero entre cero (10/0) | ErrorDeEvaluacion | Frontera | Porque verifica que el programa maneje bien la excepcion de que no se pueda dividir entre cero |
 |test_lexer.py::test_numero_con_ceros_izquierda| 0023 | que sea interpretado como 23 (sin tener en cuenta los 0) | frontera |comprueba el comportamiento en el caso de los ceros a la izquierda|
 |test_evaluator.py::test_division_resultado_menor_que_uno| 1 / 5 | 0.2 |frontera |Porque evalua que la divison de el resultado correcto aún siendo menor que 0|
 |test_evaluator.py::test_asociatividad_izquierda|10 - 2 - 3 - 1| el resultado 4| normal | porque es un caso habitual de interpretacion |
-|test_evaluator.py::test_jerarquia_operaciones| 6 + 3 * 4| 18 | normal | Porque valida el funcionamiento normal del interprete |
+|test_evaluator.py::test_jerarquia_operaciones| 10 / 5 + 3 * 4| 14 | normal | Porque valida el funcionamiento normal del interprete |
 
 
 ---
