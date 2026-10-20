@@ -87,7 +87,7 @@ Que los operadores de misma precedencia se asocien de manera correcta a la izqui
 
 | Prueba (archivo::nombre) | Entrada | Esperado | Categoría | ¿Por qué esa categoría? |
 |---|---|---|---|---|
-|test_parser.py::test_menos_unario_invalido| cualquier número con signo negativo (-x)| ErrorDeSintaxis | inválida | Porque es un valor que del cual se espera un error|
+|test_parser.py::test_menos_unario_invalido| -3| ErrorDeSintaxis | inválida | Porque es un valor que del cual se espera un error|
 |test_parser.py::test_parentesis_invalidos|3 + 3 () |ErrorDeSinteaxis | invalida| Los parentesis no contienen ni un número o expresion|
 | test_evaluator.py :: division_entre_cero | algún numero entre cero | ErrorDeEvaluacion | Frontera | Porque verifica que el programa maneje bien la excepcion de que no se pueda dividir entre cero |
 |test_lexer.py::test_numero_con_ceros_izquierda| 0023 | que sea interpretado como 23 (sin tener en cuenta los 0) | frontera |comprueba el comportamiento en el caso de los ceros a la izquierda|
