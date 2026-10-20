@@ -20,9 +20,9 @@
 | Componente | Qué recibe | Qué entrega | De qué es responsable |
 |---|---|---|---|
 | `lexer` | El texto inicial | Tokens que corresponden al texto |Identifica las partes del texto y las convierte en tokens|
-| `parser` | Los tokensdel lexer | Una representacion en AST ||
-| `ast` | | | |
-| `evaluator` | | | |
+| `parser` | Los tokens del lexer | Una representacion en AST |Verifica que siga la gramatica y genera un árbol de sintaxis|
+| `ast` |Los valores para crear nodos | Objetos que representan numeros y operaciones  | Define la estructura de los nodos que representan números y operaciones en un AST|
+| `evaluator` |El AST a evaluar| El valor resultante del AST | Evaluar el AST para entregar su valor representado en número |
 
 ### 1.2 ¿Qué recorrido sigue una expresión desde que se recibe como texto hasta que produce un resultado?
 
@@ -31,9 +31,13 @@
 | Etapa | Cómo se ve `(3 + 4) * 2` aquí |
 |---|---|
 | texto | `"(3 + 4) * 2"` |
-| tokens | |
-| AST | |
-| resultado | |
+| tokens |[ PAR_IZQ, NUMERO(3), MAS, NUMERO(4), PAR_DER, POR, NUMERO(2)] |
+| AST | *
+|-- +
+|   |-- 3
+|   `-- 4
+`-- 2 |
+| resultado | 14 |
 
 > Para el renglón del AST, dibújenlo **primero ustedes** y después comprueben
 > con `python3 interprete.py --arbol "(3 + 4) * 2"`. Si su dibujo y el del
@@ -48,7 +52,21 @@
 
 | Prueba | Componente | Comportamiento que verifica | ¿Cuántos operadores usa? | ¿Normal, frontera o inválida? |
 |---|---|---|---|---|
-| | | | | |
+| test_tokeniza_un_numero_solo | lexer | Verifica que un número se tokenize correctamente como numero y valor de 42 | 0 | Normal |
+| test_tokeniza_una_suma | lexer | Verifica que la suma se tokenize correctamente en dos números y el signo de suma | 1 | Normal |
+| test_los_espacios_no_producen_tokens | lexer | Verifica que los espacios no generen tokens | 1 | Normal |
+| test_tokeniza_parentesis | lexer | Verifica que los parentesis y números se tokenizen correctamente en su tipo correspondiente | 0 | Normal |
+|test_construye_el_arbol_de_una_suma | parser | Verifica que se construya el AST de la suma | 1 | normal |
+|test_la_multiplicacion_se_agrupa_antes_que_la_suma | parser | Verifica la jerarquia de la multiplicacion agrupandose primero | 2 |normal |
+| test_los_parentesis_cambian_la_agrupacion | parser | Verifica que los parentesis cambien segun la jerarquia y agrupacion | 2 | normal |
+| test_suma | evaluator | Verifica que se evalue correctamente la suma | 1 | Normal |
+| test_resta | evaluator | Verifica que se evalue correctamente la resta | 1 | Normal |
+| test_multiplicacion | evaluator | Verifica que se evalue correctamente la multiplicación | 1 | Normal |
+| test_division | evaluator | Verifica que se evalue correctamente la division | 1 | Normal |
+| test_precedencia_sin_parentesis | evaluator | Verifica el resultado con el orden sin parentesis | 2 | Normal |
+| test_precedencia_con_parentesis | evaluator | Verifica el resultado usando parentesis en el orden | 2 | Normal |
+
+
 
 > Llenen la tabla **completa**, con las 13. Es tediosa a propósito: la única
 > forma de saber qué no está cubierto es caracterizar sistemáticamente lo que
@@ -56,6 +74,12 @@
 > qué combinación **no aparece nunca**.
 
 ### 2.2 ¿Qué comportamientos **no** estaban probados?
+Que la division entre 0 lance ErrorDeEvaluacion
+El menos unario sea invalido a menos que se escriba de la forma (0-x)
+Que una entrada invalida sea rechazada con ErrorDeSintaxis
+El mensaje de error que indique la posicion dentro del texto
+Que los números que contengan  0 a la izquierda se interpreten de manera normal 
+Que los operadores de misma precedencia se asocien de manera correcta a la izquierda 
 
 > Ésta es la pregunta importante de toda la tarea. Tómense su tiempo.
 
@@ -67,7 +91,14 @@
 
 | Prueba (archivo::nombre) | Entrada | Esperado | Categoría | ¿Por qué esa categoría? |
 |---|---|---|---|---|
-| | | | | |
+|test_parser.py::test_menos_unario_invalido| cualquier número con signo negativo (-x)| ErrorDeSintaxis | inválida | Porque es un valor que del cual se espera un error|
+|---|---|---|---|---|
+| test_evaluator.py :: division_entre_cero | algún numero entre cero | ErrorDeEvaluacion | Frontera | Porque verifica que el programa maneje bien la excepcion de que no se pueda dividir entre cero |
+|test_lexer.py::test_numero_con_ceros_izquierda| 0023 | que sea interpretado como 23 (sin tener en cuenta los 0) | frontera |comprueba el comportamiento en el caso de los ceros a la izquierda|
+|---|---|---|---|---|
+|test_parser.py::test_asociatividad_izquierda|10 - 2 - 3 - 1| el resultado 4| normal | porque es un caso habitual de interpretacion |
+|test_evaluator.py::test_jerarquia_operaciones| 6 + 3 * 4| 18 | normal | Porque valida el funcionamiento normal del interprete |
+
 
 ---
 
