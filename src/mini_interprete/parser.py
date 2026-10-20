@@ -26,8 +26,16 @@ class Parser:
         self.pos = 0
 
     def parsear(self):
-        """Construye el AST de la lista de tokens."""
-        return self._expresion()
+        """Construye el AST y verifica que se consuman todos los tokens."""
+        nodo = self._expresion()
+
+        actual = self._actual()
+        if actual is not None:
+            raise ErrorDeSintaxis(
+                f"token inesperado {actual.valor!r}",
+                actual.posicion
+            )
+        return nodo
 
     def _actual(self):
         """El token en la posicion actual, o None si ya no quedan."""
@@ -43,20 +51,31 @@ class Parser:
 
     def _expresion(self):
         izquierda = self._termino()
-        actual = self._actual()
-        if actual is not None and actual.tipo in OPERADORES_SUMA:
+        
+        while True:
+            actual = self._actual()
+            if actual is None or actual.tipo not in OPERADORES_SUMA:
+                break
             operador = self._avanzar()
-            derecha = self._expresion()
-            return OperacionBinaria(operador.valor, izquierda, derecha)
+            derecha = self._termino()
+            izquierda = OperacionBinaria(
+                operador.valor, izquierda, derecha
+            )
         return izquierda
 
     def _termino(self):
         izquierda = self._factor()
-        actual = self._actual()
-        if actual is not None and actual.tipo in OPERADORES_PRODUCTO:
+
+        while True:
+            actual = self._actual()
+            if actual is None or actual.tipo not in OPERADORES_PRODUCTO:
+                break
+
             operador = self._avanzar()
-            derecha = self._termino()
-            return OperacionBinaria(operador.valor, izquierda, derecha)
+            derecha = self._factor()
+            izquierda = OperacionBinaria(
+                operador.valor, izquierda, derecha
+            )
         return izquierda
 
     def _factor(self):
