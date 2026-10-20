@@ -23,3 +23,6 @@ def test_los_espacios_no_producen_tokens():
 def test_tokeniza_parentesis():
     tipos = [token.tipo for token in tokenizar("(3)")]
     assert tipos == [TipoToken.PAR_IZQ, TipoToken.NUMERO, TipoToken.PAR_DER]
+
+def test_numero_con_ceros_izquierda():
+    assert tokenizar("007") == [Token(TipoToken.NUMERO, 7, 0)]
