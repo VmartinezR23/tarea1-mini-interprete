@@ -32,11 +32,13 @@
 |---|---|
 | texto | `"(3 + 4) * 2"` |
 | tokens |[ PAR_IZQ, NUMERO(3), MAS, NUMERO(4), PAR_DER, POR, NUMERO(2)] |
-| AST | *
-|-- +
-|   |-- 3
-|   `-- 4
-`-- 2 |
+| AST | ```text
+    *
+   / \
+  +   2
+ / \
+3   4
+``` |
 | resultado | 14 |
 
 > Para el renglón del AST, dibújenlo **primero ustedes** y después comprueben
